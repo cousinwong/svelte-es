@@ -1,6 +1,7 @@
 <script lang="ts">
   import DonutChart from '$lib/DonutChart.svelte';
   import { onMount } from 'svelte';
+  import { writable, type Writable } from 'svelte/store';
 
   interface Coin {
     rank: number;
@@ -24,141 +25,157 @@
 
   let tableData: Coin[] = [
     {
-            rank: 1,
-            symbol: 'USD',
-            name: 'John Doe',
-            contractAddress: '123 Main St',
-            totalHolder: 15,
-            totalSupply: 88,
-            totalSupplyPercentage: 40.00,
-        },
-        {
-            rank: 2,
-            symbol: 'EUR',
-            name: 'Jane Smith',
-            contractAddress: '456 Elm St',
-            totalHolder: 8,
-            totalSupply: 564,
-            totalSupplyPercentage: 33.00,
-        },
-        {
-            rank: 3,
-            symbol: 'GBP',
-            name: 'Michael Johnson',
-            contractAddress: '789 Oak Ave',
-            totalHolder: 4,
-            totalSupply: 23,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 4,
-            symbol: 'JPY',
-            name: 'Satoshi Nakamoto',
-            contractAddress: '321 Pine Rd',
-            totalHolder: 333,
-            totalSupply: 1,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 5,
-            symbol: 'CAD',
-            name: 'Emily Brown',
-            contractAddress: '555 Maple Ln',
-            totalHolder: 23,
-            totalSupply: 3,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 6,
-            symbol: 'AUD',
-            name: 'Oliver Wilson',
-            contractAddress: '777 Cedar Blvd',
-            totalHolder: 55,
-            totalSupply: 2,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 7,
-            symbol: 'USD',
-            name: 'Sophia Davis',
-            contractAddress: '222 Willow Dr',
-            totalHolder: 3,
-            totalSupply: 75,
-            totalSupplyPercentage: 33.00,
-        },
-        {
-            rank: 8,
-            symbol: 'EUR',
-            name: 'Daniel Martinez',
-            contractAddress: '888 Birch Ave',
-            totalHolder: 5,
-            totalSupply: 62,
-            totalSupplyPercentage: 40.00,
-        },
-        {
-            rank: 9,
-            symbol: 'GBP',
-            name: 'Isabella Thompson',
-            contractAddress: '999 Elm St',
-            totalHolder: 4,
-            totalSupply: 2,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 10,
-            symbol: 'JPY',
-            name: 'Mia Anderson',
-            contractAddress: '444 Oak Ave',
-            totalHolder: 3,
-            totalSupply: 68,
-            totalSupplyPercentage: 33.00,
-        },
-        {
-            rank: 11,
-            symbol: 'CAD',
-            name: 'David Rodriguez',
-            contractAddress: '111 Maple Ln',
-            totalHolder: 5,
-            totalSupply: 22,
-            totalSupplyPercentage: 40.00,
-        },
-        {
-            rank: 12,
-            symbol: 'AUD',
-            name: 'Ava Garcia',
-            contractAddress: '666 Pine Rd',
-            totalHolder: 2,
-            totalSupply: 1,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 13,
-            symbol: 'USD',
-            name: 'Liam Clark',
-            contractAddress: '777 Cedar Blvd',
-            totalHolder: 6,
-            totalSupply: 3,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 14,
-            symbol: 'EUR',
-            name: 'Emma Lewis',
-            contractAddress: '555 Willow Dr',
-            totalHolder: 10,
-            totalSupply: 2,
-            totalSupplyPercentage: 50.00,
-        },
-        {
-            rank: 15,
-            symbol: 'GBP',
-            name: 'Noah Walker',
-            contractAddress: '888 Birch Ave',
-            totalHolder: 3,
-            totalSupply: 1,
-            totalSupplyPercentage: 33.00,
-        },
+      rank: 1,
+      symbol: 'USD',
+      name: 'John Doe',
+      contractAddress: '123 Main St',
+      totalHolder: 15,
+      totalSupply: 88,
+      totalSupplyPercentage: 40.0,
+    },
+    {
+      rank: 2,
+      symbol: 'EUR',
+      name: 'Jane Smith',
+      contractAddress: '456 Elm St',
+      totalHolder: 8,
+      totalSupply: 564,
+      totalSupplyPercentage: 33.0,
+    },
+    {
+      rank: 3,
+      symbol: 'GBP',
+      name: 'Michael Johnson',
+      contractAddress: '789 Oak Ave',
+      totalHolder: 4,
+      totalSupply: 23,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 4,
+      symbol: 'JPY',
+      name: 'Satoshi Nakamoto',
+      contractAddress: '321 Pine Rd',
+      totalHolder: 333,
+      totalSupply: 1,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 5,
+      symbol: 'CAD',
+      name: 'Emily Brown',
+      contractAddress: '555 Maple Ln',
+      totalHolder: 23,
+      totalSupply: 3,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 6,
+      symbol: 'AUD',
+      name: 'Oliver Wilson',
+      contractAddress: '777 Cedar Blvd',
+      totalHolder: 55,
+      totalSupply: 2,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 7,
+      symbol: 'NGR',
+      name: 'Sophia Davis',
+      contractAddress: '222 Willow Dr',
+      totalHolder: 3,
+      totalSupply: 75,
+      totalSupplyPercentage: 33.0,
+    },
+    {
+      rank: 8,
+      symbol: 'SGD',
+      name: 'Daniel Martinez',
+      contractAddress: '888 Birch Ave',
+      totalHolder: 5,
+      totalSupply: 62,
+      totalSupplyPercentage: 40.0,
+    },
+    {
+      rank: 9,
+      symbol: 'MYR',
+      name: 'Isabella Thompson',
+      contractAddress: '999 Elm St',
+      totalHolder: 4,
+      totalSupply: 2,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 10,
+      symbol: 'IND',
+      name: 'Mia Anderson',
+      contractAddress: '444 Oak Ave',
+      totalHolder: 3,
+      totalSupply: 68,
+      totalSupplyPercentage: 33.0,
+    },
+    {
+      rank: 11,
+      symbol: 'RMB',
+      name: 'David Rodriguez',
+      contractAddress: '111 Maple Ln',
+      totalHolder: 5,
+      totalSupply: 22,
+      totalSupplyPercentage: 40.0,
+    },
+    {
+      rank: 12,
+      symbol: 'PIL',
+      name: 'Ava Garcia',
+      contractAddress: '666 Pine Rd',
+      totalHolder: 2,
+      totalSupply: 1,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 13,
+      symbol: 'LCR',
+      name: 'Liam Clark',
+      contractAddress: '777 Cedar Blvd',
+      totalHolder: 6,
+      totalSupply: 3,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 14,
+      symbol: 'ELW',
+      name: 'Emma Lewis',
+      contractAddress: '555 Willow Dr',
+      totalHolder: 10,
+      totalSupply: 2,
+      totalSupplyPercentage: 50.0,
+    },
+    {
+      rank: 15,
+      symbol: 'NWK',
+      name: 'Noah Walker',
+      contractAddress: '888 Birch Ave',
+      totalHolder: 3,
+      totalSupply: 1,
+      totalSupplyPercentage: 33.0,
+    },
   ];
+
+  const itemsPerPage = 10;
+
+  const currentPage: Writable<number> = writable(1);
+  let displayData: Coin[] = [];
+
+  function updateDisplayedData() {
+    const start: number = ($currentPage - 1) * itemsPerPage;
+    const end: number = start + itemsPerPage;
+    displayData = tableData.slice(start, end);
+  }
+
+  function goToPage(page: number): void {
+    currentPage.set(page);
+    updateDisplayedData();
+  }
 
   function sortData() {
     const allTotalSupply = tableData.reduce((accumulator, item) => {
@@ -181,6 +198,8 @@
     }));
 
     tableData = updatedData;
+
+    updateDisplayedData();
   }
 
   function handleSave() {
@@ -228,8 +247,22 @@
     }
   }
 
-  onMount(() => {
+  function exportToCSV(): void {
+    const csvContent: string =
+      'data:text/csv;charset=utf-8,' +
+      tableData.map((item) => Object.values(item).join(',')).join('\n');
 
+    const encodedUri: string = encodeURI(csvContent);
+    const link: HTMLAnchorElement = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'table.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  onMount(() => {
+    sortData();
   });
 </script>
 
@@ -318,7 +351,7 @@
     </div>
     <hr />
     <div class="table-container">
-      <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; flex-direction: column; width: 100%;">
         <div>
           <table>
             <thead>
@@ -330,11 +363,14 @@
                 <th scope="col">Total Holders</th>
                 <th scope="col">Total Supply</th>
                 <th scope="col">Total Supply %</th>
-                <th scope="col" />
+                <th scope="col"
+                  ><button class="export-button" on:click={exportToCSV}>Export to CSV</button
+                  ></th
+                >
               </tr>
             </thead>
             <tbody>
-              {#each tableData as row}
+              {#each displayData as row}
                 <tr>
                   <td>{row.rank}</td>
                   <td>{row.symbol}</td>
@@ -353,25 +389,33 @@
             </tbody>
           </table>
         </div>
-        <!-- <div style={{ alignSelf: "center" }}>
-              <nav aria-label="Page navigation example">
-                  <ul class="pagination">
-                      <li class={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                          <button class="page-link" href="#" onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
-                      </li>
-                      {Array.from(Array(totalPages).keys()).map((page) => (
-                          <li key={page + 1} class={`page-item ${currentPage === page + 1 ? 'active' : ''}`}>
-                              <button class="page-link" href="#" onClick={() => handlePageChange(page + 1)}>
-                                  {page + 1}
-                              </button>
-                          </li>
-                      ))}
-                      <li class={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                          <button class="page-link" href="#" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
-                      </li>
-                  </ul>
-              </nav>
-          </div> -->
+        <div style="align-self: center;">
+          <!-- Previous page button -->
+          <button
+            on:click={() => goToPage($currentPage - 1)}
+            disabled={$currentPage === 1}>Previous</button
+          >
+
+          <!-- Page numbers -->
+          {#each Array(Math.ceil(tableData.length / itemsPerPage))
+            .fill(undefined)
+            .map((_, index) => index + 1) as $pageNumber}
+            <button
+              on:click={() => goToPage($pageNumber)}
+              class:selected={$pageNumber === $currentPage}
+            >
+              {$pageNumber}
+            </button>
+          {/each}
+
+          <!-- Next page button -->
+          <button
+            on:click={() => goToPage($currentPage + 1)}
+            disabled={$currentPage ===
+              Math.ceil(tableData.length / itemsPerPage)}>Next</button
+          >
+          <!-- add export button to csv-->
+        </div>
       </div>
     </div>
   </div>
@@ -414,5 +458,20 @@
 
   .title {
     font-weight: bold;
+  }
+
+  .export-button {
+    border-width: 0;
+    margin: 0.25rem;
+    padding: 0.25rem;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  th {
+    padding: 1% 0.125rem;
+    word-wrap: normal;
   }
 </style>
