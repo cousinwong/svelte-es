@@ -12,14 +12,6 @@
                         {#each columns as column}
                             <th>{column}</th>
                         {/each}
-                        <!-- <th scope="col">Rank</th>
-                        <th scope="col">Symbol</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Contract Address</th>
-                        <th scope="col">Total Holders</th>
-                        <th scope="col">Total Supply</th>
-                        <th scope="col">Total Supply %</th>
-                        <th scope="col"></th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -30,16 +22,6 @@
                             {/each}
                         </tr>
                     {/each}
-                    <!-- <tr>
-                        <td>1</td>
-                        <td>EUR</td>
-                        <td>James</td>
-                        <td>123 Czech</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0%</td>
-                        <td>Edit</td>
-                    </tr> -->
                 </tbody>
             </table>
         </div>
