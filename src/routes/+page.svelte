@@ -1,5 +1,6 @@
 <script lang="ts">
-  import Table from '../lib/Table.svelte';
+  import DonutChart from '$lib/DonutChart.svelte';
+import Table from '../lib/Table.svelte';
 
   let tableColumns: string[] = ['Name', 'Age', 'Email'];
   let tableData: Record<string, any>[] = [
@@ -58,7 +59,7 @@
       <div style="flex-grow: 1;" />
       <div class="pie-chart">
         <p class="title">Token Statistics by Total Supply</p>
-        <!-- <DonutChart /> -->
+        <DonutChart />
       </div>
       <div style="flex-grow: 1;" />
     </div>
