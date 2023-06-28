@@ -175,6 +175,7 @@
   function goToPage(page: number): void {
     currentPage.set(page);
     updateDisplayedData();
+    scrollToComponent('pagination-component');
   }
 
   function sortData() {
@@ -245,6 +246,7 @@
     if (getCoinFromArray !== undefined) {
       selectedCoin = getCoinFromArray;
     }
+    scrollToComponent('input-component');
   }
 
   function exportToCSV(): void {
@@ -261,6 +263,13 @@
     document.body.removeChild(link);
   }
 
+  function scrollToComponent(componentId: string): void {
+    const component: HTMLElement | null = document.getElementById(componentId);
+    if (component) {
+      component.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   onMount(() => {
     sortData();
   });
@@ -273,7 +282,7 @@
 
 <section>
   <div class="home-container">
-    <div class="input-chart-container">
+    <div class="input-chart-container" id="input-component">
       <form class="input-form">
         <p class="title">Save / Update Token</p>
         <div style="display: flex; flex-direction: column;">
@@ -331,29 +340,28 @@
             <label class="input-title" for="" />
             <div>
               <button
-                class="btn btn-primary"
+                class="save-btn"
                 style="margin-right: 15px;"
                 on:click={handleSave}>Save</button
               >
-              <button class="btn btn-secondary" on:click={handleReset}
+              <button class="reset-btn" on:click={handleReset}
                 >Reset</button
               >
             </div>
           </div>
         </div>
       </form>
-      <div style="flex-grow: 1;" />
       <div class="pie-chart">
         <p class="title">Token Statistics by Total Supply</p>
         <DonutChart />
       </div>
-      <div style="flex-grow: 1;" />
     </div>
     <hr />
     <div class="table-container">
       <div style="display: flex; flex-direction: column; width: 100%;">
         <div>
-          <table>
+          <!-- The Table -->
+          <table cellspacing=0>
             <thead>
               <tr>
                 <th scope="col">Rank</th>
@@ -364,7 +372,8 @@
                 <th scope="col">Total Supply</th>
                 <th scope="col">Total Supply %</th>
                 <th scope="col"
-                  ><button class="export-button" on:click={exportToCSV}>Export to CSV</button
+                  ><button class="export-button" on:click={exportToCSV}
+                    >Export to CSV</button
                   ></th
                 >
               </tr>
@@ -379,17 +388,19 @@
                   <td>{row.totalHolder}</td>
                   <td>{row.totalSupply}</td>
                   <td>{row.totalSupplyPercentage.toFixed(5)}</td>
-                  <td
-                    ><button on:click={() => handleEdit(row.symbol)}
-                      >Edit</button
-                    ></td
-                  >
+                  <td>
+                    <div class="edit-button">
+                      <button on:click={() => handleEdit(row.symbol)}
+                        >Edit</button
+                      >
+                    </div>
+                  </td>
                 </tr>
               {/each}
             </tbody>
           </table>
         </div>
-        <div style="align-self: center;">
+        <div class="pagination"  id="pagination-component">
           <!-- Previous page button -->
           <button
             on:click={() => goToPage($currentPage - 1)}
@@ -414,7 +425,6 @@
             disabled={$currentPage ===
               Math.ceil(tableData.length / itemsPerPage)}>Next</button
           >
-          <!-- add export button to csv-->
         </div>
       </div>
     </div>
@@ -437,6 +447,7 @@
   }
 
   .input-form {
+    flex-grow: 1;
     margin: 1%;
   }
 
@@ -454,24 +465,92 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-grow: 1;
   }
 
   .title {
     font-weight: bold;
   }
 
-  .export-button {
-    border-width: 0;
+  .save-btn {
+    padding: 0.5rem 1rem;
     margin: 0.25rem;
-    padding: 0.25rem;
+    border-width: 0;
+    color: white;
+    background-color: cornflowerblue;
+    border-radius: 0.25rem;
+  }
+
+  .reset-btn {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border-width: 0;
+    background-color: gainsboro;
+    border-radius: 0.25rem;
+  }
+
+  .export-button {
+    border-width: 0.0625rem;
+    margin: 0.25rem;
+    padding: 0.375rem 1rem;
+    background-color: gainsboro;
+    border-radius: 5rem;
+    cursor: pointer;
+  }
+
+  .edit-button {
+    display: flex;
+    justify-content: center;
+  }
+
+  .edit-button button {
+    padding: 0.25rem 1rem;
+    margin: 0.25rem;
+    border-width: 0;
+    background-color: transparent;
+    cursor: pointer;
+    color: cornflowerblue;
+  }
+
+  .pagination {
+    align-self: center;
+  }
+
+  .pagination button {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border-width: 0;
+    background-color: gainsboro;
+  }
+  
+  .pagination :first-child {
+    border-top-left-radius: 5rem;
+    border-bottom-left-radius: 5rem;
+    
+  }
+
+  .pagination :last-child {
+    border-top-right-radius: 5rem;
+    border-bottom-right-radius: 5rem;
   }
 
   table {
     width: 100%;
+    padding: 5px;
+    margin-bottom: 2rem;
   }
 
   th {
     padding: 1% 0.125rem;
     word-wrap: normal;
+    border-bottom: 1px solid;
+    text-align: center;
+  }
+
+  td {
+    padding: 0.125rem;
+    word-wrap: normal;
+    border-bottom: 1px solid;
+    text-align: center;
   }
 </style>
