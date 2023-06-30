@@ -2,7 +2,7 @@
   import DonutChart from '$lib/DonutChart.svelte';
   import { onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
-  import { selectedCoin, coinData, type Coin } from './store';
+  import { selectedCoin, coinData, type Coin } from './coin-store';
 
 
   coinData.set([
@@ -352,7 +352,7 @@
       </form>
       <div class="pie-chart">
         <p class="title">Token Statistics by Total Supply</p>
-        <DonutChart />
+        <DonutChart bind:chartData={$coinData} labelIndex={1} dataIndex={5} />
       </div>
     </div>
     <hr />

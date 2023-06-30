@@ -1,6 +1,6 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import { coinData } from "../store";
+    import { coinData } from "../coin-store";
 
     const sym = $coinData.find(s => s.symbol === $page.url.searchParams.get('symbol'));
 
