@@ -2,28 +2,10 @@
   import DonutChart from '$lib/DonutChart.svelte';
   import { onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
+  import { selectedCoin, coinData, type Coin } from './store';
 
-  interface Coin {
-    rank: number;
-    name: string;
-    symbol: string;
-    contractAddress: string;
-    totalSupply: number;
-    totalHolder: number;
-    totalSupplyPercentage: number;
-  }
 
-  let selectedCoin: Coin = {
-    rank: 0,
-    symbol: '',
-    name: '',
-    contractAddress: '',
-    totalHolder: 0,
-    totalSupply: 0,
-    totalSupplyPercentage: 0,
-  };
-
-  let tableData: Coin[] = [
+  coinData.set([
     {
       rank: 1,
       symbol: 'USD',
@@ -32,6 +14,7 @@
       totalHolder: 15,
       totalSupply: 88,
       totalSupplyPercentage: 40.0,
+      price: 352.67,
     },
     {
       rank: 2,
@@ -41,6 +24,7 @@
       totalHolder: 8,
       totalSupply: 564,
       totalSupplyPercentage: 33.0,
+      price: 302.00,
     },
     {
       rank: 3,
@@ -50,6 +34,7 @@
       totalHolder: 4,
       totalSupply: 23,
       totalSupplyPercentage: 50.0,
+      price: 671.00,
     },
     {
       rank: 4,
@@ -59,6 +44,7 @@
       totalHolder: 333,
       totalSupply: 1,
       totalSupplyPercentage: 50.0,
+      price: 23.75,
     },
     {
       rank: 5,
@@ -68,6 +54,7 @@
       totalHolder: 23,
       totalSupply: 3,
       totalSupplyPercentage: 50.0,
+      price: 35.66,
     },
     {
       rank: 6,
@@ -77,6 +64,7 @@
       totalHolder: 55,
       totalSupply: 2,
       totalSupplyPercentage: 50.0,
+      price: 220.10,
     },
     {
       rank: 7,
@@ -86,6 +74,7 @@
       totalHolder: 3,
       totalSupply: 75,
       totalSupplyPercentage: 33.0,
+      price: 5.23,
     },
     {
       rank: 8,
@@ -95,6 +84,7 @@
       totalHolder: 5,
       totalSupply: 62,
       totalSupplyPercentage: 40.0,
+      price: 76.01,
     },
     {
       rank: 9,
@@ -104,6 +94,7 @@
       totalHolder: 4,
       totalSupply: 2,
       totalSupplyPercentage: 50.0,
+      price: 32.12,
     },
     {
       rank: 10,
@@ -113,6 +104,7 @@
       totalHolder: 3,
       totalSupply: 68,
       totalSupplyPercentage: 33.0,
+      price: 0.20,
     },
     {
       rank: 11,
@@ -122,6 +114,7 @@
       totalHolder: 5,
       totalSupply: 22,
       totalSupplyPercentage: 40.0,
+      price: 12.34,
     },
     {
       rank: 12,
@@ -131,6 +124,7 @@
       totalHolder: 2,
       totalSupply: 1,
       totalSupplyPercentage: 50.0,
+      price: 98.00,
     },
     {
       rank: 13,
@@ -140,6 +134,7 @@
       totalHolder: 6,
       totalSupply: 3,
       totalSupplyPercentage: 50.0,
+      price: 102.55,
     },
     {
       rank: 14,
@@ -149,6 +144,7 @@
       totalHolder: 10,
       totalSupply: 2,
       totalSupplyPercentage: 50.0,
+      price: 52.23,
     },
     {
       rank: 15,
@@ -158,8 +154,9 @@
       totalHolder: 3,
       totalSupply: 1,
       totalSupplyPercentage: 33.0,
+      price: 123.45,
     },
-  ];
+  ]);
 
   const itemsPerPage = 10;
 
@@ -169,7 +166,7 @@
   function updateDisplayedData() {
     const start: number = ($currentPage - 1) * itemsPerPage;
     const end: number = start + itemsPerPage;
-    displayData = tableData.slice(start, end);
+    displayData = $coinData.slice(start, end);
   }
 
   function goToPage(page: number): void {
@@ -179,17 +176,17 @@
   }
 
   function sortData() {
-    const allTotalSupply = tableData.reduce((accumulator, item) => {
+    const allTotalSupply = $coinData.reduce((accumulator, item) => {
       return accumulator + Number(item.totalSupply);
     }, 0);
 
-    tableData.forEach((item) => {
+    $coinData.forEach((item) => {
       item.totalSupplyPercentage = Number(
         ((item.totalSupply / allTotalSupply) * 100).toFixed(5)
       );
     });
 
-    const sortedData = [...tableData].sort(
+    const sortedData = [...$coinData].sort(
       (a, b) => b.totalSupply - a.totalSupply
     );
 
@@ -198,39 +195,40 @@
       rank: index + 1,
     }));
 
-    tableData = updatedData;
+    $coinData = updatedData;
 
     updateDisplayedData();
   }
 
   function handleSave() {
-    const existingItemIndex = tableData.findIndex(
-      (item) => item.symbol === selectedCoin.symbol
+    const existingItemIndex = $coinData.findIndex(
+      (item) => item.symbol === $selectedCoin.symbol
     );
 
     let newCoin: Coin = {
       rank: 0,
-      symbol: selectedCoin.symbol,
-      name: selectedCoin.name,
-      contractAddress: selectedCoin.contractAddress,
-      totalHolder: selectedCoin.totalHolder,
-      totalSupply: selectedCoin.totalSupply,
+      symbol: $selectedCoin.symbol,
+      name: $selectedCoin.name,
+      contractAddress: $selectedCoin.contractAddress,
+      totalHolder: $selectedCoin.totalHolder,
+      totalSupply: $selectedCoin.totalSupply,
       totalSupplyPercentage: 0,
+      price: 0.00,
     };
 
     if (existingItemIndex !== -1) {
-      const updatedData = [...tableData];
+      const updatedData = [...$coinData];
       updatedData[existingItemIndex] = newCoin;
-      tableData = updatedData;
+      $coinData = updatedData;
     } else {
-      tableData = [...tableData, newCoin];
+      $coinData = [...$coinData, newCoin];
     }
 
     sortData();
   }
 
   function handleReset() {
-    selectedCoin = {
+    $selectedCoin = {
       rank: 0,
       symbol: '',
       name: '',
@@ -238,13 +236,14 @@
       totalHolder: 0,
       totalSupply: 0,
       totalSupplyPercentage: 0,
+      price: 0.00,
     };
   }
 
   function handleEdit(symbol: string) {
-    var getCoinFromArray = tableData.find((item) => item.symbol === symbol);
+    var getCoinFromArray = $coinData.find((item) => item.symbol === symbol);
     if (getCoinFromArray !== undefined) {
-      selectedCoin = getCoinFromArray;
+      $selectedCoin = getCoinFromArray;
     }
     scrollToComponent('input-component');
   }
@@ -252,7 +251,7 @@
   function exportToCSV(): void {
     const csvContent: string =
       'data:text/csv;charset=utf-8,' +
-      tableData.map((item) => Object.values(item).join(',')).join('\n');
+      $coinData.map((item) => Object.values(item).join(',')).join('\n');
 
     const encodedUri: string = encodeURI(csvContent);
     const link: HTMLAnchorElement = document.createElement('a');
@@ -293,7 +292,7 @@
               type="text"
               placeholder="Name"
               id="name-input"
-              bind:value={selectedCoin.name}
+              bind:value={$selectedCoin.name}
             />
           </div>
           <div style="display: flex;">
@@ -303,7 +302,7 @@
               type="text"
               placeholder="Symbol"
               id="symbol-input"
-              bind:value={selectedCoin.symbol}
+              bind:value={$selectedCoin.symbol}
             />
           </div>
           <div style="display: flex;">
@@ -313,7 +312,7 @@
               type="text"
               placeholder="Contract Address"
               id="ca-input"
-              bind:value={selectedCoin.contractAddress}
+              bind:value={$selectedCoin.contractAddress}
             />
           </div>
           <div style="display: flex;">
@@ -323,7 +322,7 @@
               type="text"
               placeholder="Total Supply"
               id="supply-input"
-              bind:value={selectedCoin.totalSupply}
+              bind:value={$selectedCoin.totalSupply}
             />
           </div>
           <div style="display: flex;">
@@ -333,7 +332,7 @@
               type="text"
               placeholder="Total Holders"
               id="holder-input"
-              bind:value={selectedCoin.totalHolder}
+              bind:value={$selectedCoin.totalHolder}
             />
           </div>
           <div style="display: flex;">
@@ -382,7 +381,7 @@
               {#each displayData as row}
                 <tr>
                   <td>{row.rank}</td>
-                  <td>{row.symbol}</td>
+                  <td><a href="/detail?symbol={row.symbol}">{row.symbol}</a></td>
                   <td>{row.name}</td>
                   <td>{row.contractAddress}</td>
                   <td>{row.totalHolder}</td>
@@ -408,7 +407,7 @@
           >
 
           <!-- Page numbers -->
-          {#each Array(Math.ceil(tableData.length / itemsPerPage))
+          {#each Array(Math.ceil($coinData.length / itemsPerPage))
             .fill(undefined)
             .map((_, index) => index + 1) as $pageNumber}
             <button
@@ -423,7 +422,7 @@
           <button
             on:click={() => goToPage($currentPage + 1)}
             disabled={$currentPage ===
-              Math.ceil(tableData.length / itemsPerPage)}>Next</button
+              Math.ceil($coinData.length / itemsPerPage)}>Next</button
           >
         </div>
       </div>
@@ -495,7 +494,6 @@
     padding: 0.375rem 1rem;
     background-color: gainsboro;
     border-radius: 5rem;
-    cursor: pointer;
   }
 
   .edit-button {
@@ -508,7 +506,6 @@
     margin: 0.25rem;
     border-width: 0;
     background-color: transparent;
-    cursor: pointer;
     color: cornflowerblue;
   }
 
@@ -552,5 +549,13 @@
     word-wrap: normal;
     border-bottom: 1px solid;
     text-align: center;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  table a {
+    color: cornflowerblue;
   }
 </style>

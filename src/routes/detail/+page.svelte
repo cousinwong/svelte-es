@@ -1,3 +1,14 @@
+<script lang="ts">
+    import { page } from "$app/stores";
+    import { coinData } from "../store";
+
+    const sym = $coinData.find(s => s.symbol === $page.url.searchParams.get('symbol'));
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
 <svelte:head>
     <title>Detail</title>
 	<meta name="description" content="Detail" />
@@ -7,29 +18,29 @@
     <div class="detail-container">
         <div style="display: flex; flex-direction: column;">
             <div style="display: flex; margin: 1% 1%;">
-                <button type="button" class="btn btn-secondary">Back</button>
+                <button type="button" class="back-btn" on:click={goBack}>Back</button>
                 <p class="title">Save / Update Token</p>
             </div>
             <div style="display: flex; flex-direction: column;">
-                <!-- <div style={{ display: "flex" }}>
-                    <label class="input-title">Price: </label>
-                    <label class="input-title" style={{ fontWeight: "bold" }}>$ {location.state.state.price }</label>
+                <div style="display: flex;">
+                    <p class="input-title">Price: </p>
+                    <p class="input-title" style="font-weight: bold;">{sym?.price}</p>
                 </div>
-                <hr style={{ margin: "10px 50px"}} />
-                <div style={{ display: "flex" }}>
-                    <label class="input-title">Total Supply:</label>
-                    <label class="input-title">{location.state.state.totalSupply}</label>
+                <hr style="margin: 10px 50px;"/>
+                <div style="display: flex;">
+                    <p class="input-title">Total Supply:</p>
+                    <p class="input-title">{sym?.totalSupply}</p>
                 </div>
-                <hr style={{ margin: "10px 50px" }} />
-                <div style={{ display: "flex" }}>
-                    <label class="input-title">Total Holders:</label>
-                    <label class="input-title">{location.state.state.totalHolder}</label>
+                <hr style="margin: 10px 50px;"/>
+                <div style="display: flex;">
+                    <p class="input-title">Total Holders:</p>
+                    <p class="input-title">{sym?.totalHolder}</p>
                 </div>
-                <hr style={{ margin: "10px 50px" }} />
-                <div style={{ display: "flex" }}>
-                    <label class="input-title">Name:</label>
-                    <label class="input-title">{location.state.state.name}</label>
-                </div> -->
+                <hr style="margin: 10px 50px;"/>
+                <div style="display: flex;">
+                    <p class="input-title">Name:</p>
+                    <p class="input-title">{sym?.name}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -52,15 +63,12 @@
     min-width: 200px;
 }
 
-.input-box {
-    margin-bottom: 10px;
-    padding: 3px 7px;
-}
-
-.pie-chart {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.back-btn {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border-width: 0;
+    background-color: gainsboro;
+    border-radius: 0.25rem;
 }
 
 .title {
